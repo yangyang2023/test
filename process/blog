@@ -1,0 +1,56 @@
+#include<iostream>
+#include<stdio.h>
+#include<string.h>
+#define MAXN 20
+using namespace std;
+
+int a[] = { 1,2,3,4,5 };
+int n = 5, W = 9;
+int maxw;//存放最优解的总和
+int x[MAXN];//存放最优解的向量
+int minnum = n;//存放最优解的数字个数
+
+void dfs(int num,int tw, int rw, int op[], int i)//num是数字个数 op[]是一个解 i表示考虑的数字i
+{
+	//tw是考虑第i个整数时选取的整数和，rw为剩下的整数和
+	if (i > n)
+	{
+		if (tw == W&&num<minnum)
+		{
+			maxw = tw;
+			minnum = num;
+			for (int j = 0; j < n; j++)
+				x[j] = op[j];
+		}
+	}
+	else
+	{
+		op[i] = 1;
+		if (tw + a[i] <= W)
+			dfs(num + 1, tw + a[i], rw, op, i + 1);
+		op[i] = 0;
+		if (tw + rw >= W)
+			dfs(num, tw, rw, op, i + 1);
+	}
+}
+
+void dispasolution(int n)
+{
+	for (int i = 0; i < n; i++)
+		if (x[i] == 1)
+			cout << "选取第" << i << "个数,为" << a[i]<<endl;
+	cout << "总和为" << maxw << endl;
+}
+
+int main()
+{
+	int op[MAXN];
+	memset(op, 0, sizeof(op));
+	int rw = 0;
+	for (int i = 0; i < n; i++)
+		rw += a[i];
+	dfs(0, 0, rw, op, 0);
+	cout << "最优方案" << endl;
+	dispasolution(n);
+	return 0;
+}
